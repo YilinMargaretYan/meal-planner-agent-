@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meal Recommendation Assistant</title>
+    <link rel="stylesheet" href="./assets/css/app.css">
+</head>
+<body>
+<div class="app-shell">
+    <header class="topbar">
+        <a class="brand" href="#/diet" aria-label="Return to the meal assistant home page">
+            <span class="brand-mark">D</span>
+            <span>
+                    <strong>Meal Recommendation Assistant</strong>
+                    <small>Find a meal that fits your day</small>
+                </span>
+        </a>
+        <nav class="nav-links" aria-label="Main navigation">
+            <a href="#/diet" data-nav="/diet">Home</a>
+            <a href="#/diet/chat" data-nav="/diet/chat">Chat</a>
+            <a href="#/diet/meals/personal" data-nav="/diet/meals/personal">My Meals</a>
+            <a href="#/diet/meals/public" data-nav="/diet/meals/public">Public Meals</a>
+            <a href="#/admin/traces" data-nav="/admin/traces">Trace</a>
+            <a href="#/admin/evaluations" data-nav="/admin/evaluations">Evaluation</a>
+        </nav>
+        <label class="user-field">
+            <span>User ID</span>
+            <input id="userIdInput" type="number" min="1" value="1">
+        </label>
+    </header>
+
+    <main id="app" class="page" tabindex="-1"></main>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="./assets/js/api.js"></script>
+<script src="./assets/js/app.js"></script>
+</body>
+</html>

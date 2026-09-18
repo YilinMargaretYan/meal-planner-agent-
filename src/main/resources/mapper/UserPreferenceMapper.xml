@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.diet.mapper.UserPreferenceMapper">
+
+    <resultMap id="UserPreferenceRowMap" type="com.diet.model.UserPreferenceRow">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="slotName" column="slot_name"/>
+        <result property="optionValue" column="option_value"/>
+        <result property="preferenceType" column="preference_type"/>
+        <result property="confidence" column="confidence"/>
+        <result property="expiresAt" column="expires_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findActiveByUserId" resultMap="UserPreferenceRowMap">
+        SELECT id, user_id, slot_name, option_value, preference_type, confidence, expires_at, created_at, updated_at
+        FROM diet_user_preference
+        WHERE user_id = #{userId}
+        AND (expires_at IS NULL OR expires_at &gt; NOW())
+        ORDER BY updated_at DESC, id DESC
+    </select>
+
+    <insert id="upsert" parameterType="com.diet.model.UserPreferenceRow">
+        INSERT INTO diet_user_preference (
+            user_id, slot_name, option_value, preference_type, confidence, expires_at, created_at, updated_at
+        ) VALUES (
+            #{userId}, #{slotName}, #{optionValue}, #{preferenceType}, #{confidence}, #{expiresAt}, NOW(), NOW()
+        )
+        ON DUPLICATE KEY UPDATE
+            confidence = VALUES(confidence),
+            expires_at = VALUES(expires_at),
+            updated_at = NOW()
+    </insert>
+
+    <select id="findByUnique" resultMap="UserPreferenceRowMap">
+        SELECT id, user_id, slot_name, option_value, preference_type, confidence, expires_at, created_at, updated_at
+        FROM diet_user_preference
+        WHERE user_id = #{userId}
+        AND slot_name = #{slotName}
+        AND option_value = #{optionValue}
+        AND preference_type = #{preferenceType}
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM diet_user_preference
+        WHERE id = #{id}
+        AND user_id = #{userId}
+    </delete>
+</mapper>
