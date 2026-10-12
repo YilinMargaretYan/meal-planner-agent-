@@ -10,7 +10,7 @@ A full-stack meal recommendation application that combines multi-agent reasoning
 - **Hybrid retrieval with resilience:** Combines tag-based MySQL retrieval with optional semantic search; deterministic fallback rules handle uncertain intent, incomplete requests, unavailable matches, and LLM failures.
 - **Traceability and evaluation:** Persists request traces, agent events, session state, user feedback, and evaluation labels for inspection and quality review.
 - **Bilingual-friendly UI:** Shows English-first labels alongside the original Chinese tag values, preserving compatibility with existing records. Built-in public meals display English names.
-- **Secure cloud delivery:** Containerized with Docker and deployable to AWS ECS Fargate through GitHub Actions CI/CD using GitHub OIDC—without long-lived AWS access keys.
+- **Secure cloud delivery:** Containerized with Docker and deployable to AWS ECS Fargate through GitHub Actions CI/CD using GitHub OIDC。
 
 ## Interface preview
 
