@@ -12,6 +12,67 @@
         taste: "Taste",
         convenience: "Convenience"
     };
+    // Display English first while keeping the existing Chinese tag as the submitted value.
+    // This avoids breaking saved meals, database matching, and historical traces.
+    const OPTION_LABELS = {
+        "早餐": "Breakfast / 早餐", "早午餐": "Brunch / 早午餐", "午餐": "Lunch / 午餐",
+        "下午茶": "Afternoon tea / 下午茶", "晚餐": "Dinner / 晚餐", "夜宵": "Late-night meal / 夜宵",
+        "加餐": "Snack / 加餐", "三餐": "All-day meals / 三餐",
+        "疲惫": "Tired / 疲惫", "烦躁": "Irritable / 烦躁", "开心": "Happy / 开心",
+        "焦虑": "Anxious / 焦虑", "低落": "Low / 低落", "平静": "Calm / 平静",
+        "压力大": "Stressed / 压力大", "没胃口": "No appetite / 没胃口", "想放松": "Want to relax / 想放松",
+        "想奖励自己": "Want a treat / 想奖励自己",
+        "工作": "Work / 工作", "校园": "Campus / 校园", "家里": "Home / 家里",
+        "周末": "Weekend / 周末", "加班": "Overtime / 加班", "运动后": "After exercise / 运动后",
+        "通勤": "Commute / 通勤", "聚餐": "Group meal / 聚餐", "独处": "Alone / 独处", "旅行": "Travel / 旅行",
+        "减脂": "Weight loss / 减脂", "清淡": "Light / 清淡", "养胃": "Gentle on stomach / 养胃",
+        "高蛋白": "High protein / 高蛋白", "均衡": "Balanced / 均衡", "降火": "Cooling foods / 降火",
+        "低油": "Low oil / 低油", "低盐": "Low salt / 低盐", "低糖": "Low sugar / 低糖",
+        "补能": "Energy boost / 补能", "增肌": "Muscle gain / 增肌", "控碳水": "Low carb / 控碳水",
+        "易消化": "Easy to digest / 易消化", "暖胃": "Warm and comforting / 暖胃",
+        "川菜": "Sichuan / 川菜", "粤菜": "Cantonese / 粤菜", "湘菜": "Hunan / 湘菜",
+        "江浙菜": "Jiangsu-Zhejiang / 江浙菜", "东北菜": "Northeast Chinese / 东北菜", "鲁菜": "Shandong / 鲁菜",
+        "闽南菜": "Minnan / 闽南菜", "云南菜": "Yunnan / 云南菜", "新疆菜": "Xinjiang / 新疆菜",
+        "轻食": "Light meals / 轻食", "西餐": "Western / 西餐", "日料": "Japanese / 日料",
+        "韩餐": "Korean / 韩餐", "东南亚菜": "Southeast Asian / 东南亚菜", "火锅": "Hot pot / 火锅",
+        "烧烤": "Barbecue / 烧烤", "海鲜": "Seafood / 海鲜", "素食": "Vegetarian / 素食",
+        "家常": "Home-style / 家常", "小吃": "Street food / 小吃", "粉面": "Noodles / 粉面",
+        "粥汤": "Congee and soup / 粥汤", "快餐": "Fast food / 快餐", "甜品": "Dessert / 甜品",
+        "辣": "Spicy / 辣", "微辣": "Slightly spicy / 微辣", "中辣": "Medium spicy / 中辣",
+        "麻辣": "Mala / 麻辣", "甜": "Sweet / 甜", "酸甜": "Sweet and sour / 酸甜",
+        "咸鲜": "Savory / 咸鲜", "鲜香": "Umami / 鲜香", "酱香": "Soy sauce / 酱香",
+        "蒜香": "Garlic / 蒜香", "番茄味": "Tomato / 番茄味", "咖喱味": "Curry / 咖喱味",
+        "奶香": "Creamy / 奶香", "油香": "Rich / 油香", "烟火气": "Smoky / 烟火气",
+        "快速": "Quick / 快速", "慢享": "Leisurely / 慢享", "外带方便": "Takeaway-friendly / 外带方便",
+        "堂食舒服": "Comfortable dine-in / 堂食舒服", "少排队": "Short wait / 少排队", "少餐具": "Few utensils / 少餐具",
+        "一人食": "Solo meal / 一人食", "多人共享": "Shared meal / 多人共享", "适合备餐": "Meal-prep friendly / 适合备餐",
+        "适合边走边吃": "Easy to eat on the go / 适合边走边吃"
+    };
+    // Public seed meals remain stored in Chinese so existing search data stays compatible.
+    // The browser presents their English names consistently to English-speaking users.
+    const PUBLIC_MEAL_NAMES = {
+        "番茄鸡蛋面": "Tomato and egg noodles",
+        "清汤馄饨": "Clear-broth wonton soup",
+        "鸡胸肉轻食碗": "Chicken breast grain bowl",
+        "麻辣香锅": "Spicy dry pot"
+    };
+    function optionLabel(value) {
+        return OPTION_LABELS[value] || value;
+    }
+    function publicMealName(value) {
+        return PUBLIC_MEAL_NAMES[value] || value;
+    }
+    function displayMealName(meal) {
+        return String(meal.sourceType || "").toUpperCase() === "PUBLIC"
+            ? publicMealName(meal.name)
+            : meal.name;
+    }
+    function displayMessageText(value) {
+        return Object.entries(PUBLIC_MEAL_NAMES).reduce(
+            (text, [storedName, englishName]) => text.replaceAll(storedName, englishName),
+            String(value || "")
+        );
+    }
     const INTENTS = [
         "MEAL_RECOMMENDATION",
         "CLARIFY_NEEDED",
@@ -281,7 +342,7 @@
             : "";
         return `
             <article class="message ${message.role}">
-                <div class="bubble">${escapeHtml(message.text)}</div>
+                <div class="bubble">${escapeHtml(displayMessageText(message.text))}</div>
                 ${missingSlots}
                 ${mealCards ? `<div class="grid">${mealCards}</div>` : ""}
                 ${trace ? `<div class="message-meta">${trace}</div>` : ""}
@@ -417,7 +478,7 @@
                 >
                     ${options.map((option) => {
                         const isSelected = selectedSet.has(option);
-                        return `<option value="${escapeHtml(option)}" ${isSelected ? "selected" : ""}>${escapeHtml(option)}</option>`;
+                        return `<option value="${escapeHtml(option)}" ${isSelected ? "selected" : ""}>${escapeHtml(optionLabel(option))}</option>`;
                     }).join("")}
                 </select>
             </div>
@@ -448,7 +509,7 @@
             <article class="meal-card">
                 <header>
                     <div>
-                        <h3>${escapeHtml(meal.name)}</h3>
+                        <h3>${escapeHtml(displayMealName(meal))}</h3>
                         <p class="muted">${escapeHtml(meal.sourceType || "")}</p>
                     </div>
                     ${meal.matchScore ? `<span class="score">${Math.round(meal.matchScore * 100)}% match</span>` : ""}
@@ -471,7 +532,7 @@
         `;
     }
     function mealTags(meal) {
-        return Object.keys(SLOT_LABELS).flatMap((key) => (meal[key] || []).map((value) => `${SLOT_LABELS[key]}：${value}`));
+        return Object.keys(SLOT_LABELS).flatMap((key) => (meal[key] || []).map((value) => `${SLOT_LABELS[key]}: ${optionLabel(value)}`));
     }
     async function ensurePersonalMeals(force) {
         if (!force && state.personalMeals.length) {
@@ -481,7 +542,10 @@
             state.personalMeals = await DietApi.listPersonalMeals();
             state.home.loaded = false;
             if (currentRoute() === "/diet/meals/personal") {
-                document.getElementById("personalMealList").innerHTML = renderMealList(state.personalMeals, { editable: true });
+                const mealList = document.getElementById("personalMealList");
+                if (mealList) {
+                    mealList.innerHTML = renderMealList(state.personalMeals, { editable: true });
+                }
             }
         } catch (error) {
             showToast(error.message || "Could not load your meals.", "error");
@@ -579,7 +643,10 @@
             state.publicMeals = await DietApi.listPublicMeals();
             state.home.loaded = false;
             if (currentRoute() === "/diet/meals/public") {
-                document.getElementById("publicMealList").innerHTML = renderMealList(state.publicMeals, {});
+                const mealList = document.getElementById("publicMealList");
+                if (mealList) {
+                    mealList.innerHTML = renderMealList(state.publicMeals, {});
+                }
             }
         } catch (error) {
             showToast(error.message || "Could not load public meals.", "error");

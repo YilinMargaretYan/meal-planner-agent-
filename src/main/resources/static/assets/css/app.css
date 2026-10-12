@@ -1,17 +1,17 @@
 :root {
-    --bg: #f4faf7;
-    --surface: #ffffff;
-    --surface-soft: #edf8f2;
-    --primary: #2f9e73;
-    --primary-dark: #237a5b;
-    --primary-soft: #dff4ea;
-    --accent: #7cc9b0;
-    --text: #18352a;
-    --muted: #6a7d74;
-    --border: #dcebe4;
-    --danger: #cc4b4b;
-    --warning: #b7791f;
-    --shadow: 0 18px 45px rgba(39, 92, 70, 0.11);
+    --bg: #fbf4eb;
+    --surface: #fffdf9;
+    --surface-soft: #f9eadb;
+    --primary: #b65b3c;
+    --primary-dark: #843e2b;
+    --primary-soft: #f6dcc8;
+    --accent: #dda56c;
+    --text: #3d2a22;
+    --muted: #7c655a;
+    --border: #ead9c9;
+    --danger: #b84f49;
+    --warning: #a86f28;
+    --shadow: 0 18px 45px rgba(104, 58, 39, 0.12);
     --radius-lg: 26px;
     --radius-md: 18px;
     --radius-sm: 12px;
@@ -26,8 +26,9 @@ body {
     min-height: 100vh;
     color: var(--text);
     background:
-        radial-gradient(circle at top left, rgba(124, 201, 176, 0.32), transparent 34rem),
-        linear-gradient(180deg, #f7fcfa 0%, var(--bg) 100%);
+        radial-gradient(circle at top left, rgba(224, 165, 108, 0.34), transparent 34rem),
+        radial-gradient(circle at 95% 10%, rgba(218, 115, 82, 0.16), transparent 28rem),
+        linear-gradient(180deg, #fffaf5 0%, var(--bg) 100%);
     font-family: "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
 }
 
@@ -62,10 +63,10 @@ button {
     gap: 18px;
     align-items: center;
     padding: 14px 16px;
-    border: 1px solid rgba(220, 235, 228, 0.86);
+    border: 1px solid rgba(234, 217, 201, 0.9);
     border-radius: 24px;
     background: rgba(255, 255, 255, 0.82);
-    box-shadow: 0 10px 28px rgba(39, 92, 70, 0.09);
+    box-shadow: 0 10px 28px rgba(104, 58, 39, 0.1);
     backdrop-filter: blur(18px);
 }
 
@@ -151,7 +152,7 @@ button {
 .hero-panel,
 .card,
 .section {
-    border: 1px solid rgba(220, 235, 228, 0.95);
+    border: 1px solid rgba(234, 217, 201, 0.95);
     border-radius: var(--radius-lg);
     background: rgba(255, 255, 255, 0.88);
     box-shadow: var(--shadow);
@@ -246,7 +247,7 @@ button {
     padding: 18px;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
-    background: linear-gradient(135deg, #fff, #f0faf5);
+    background: linear-gradient(135deg, #fffdf9, #f9eadb);
 }
 
 .stat-card strong {
@@ -271,7 +272,7 @@ button {
 
 .btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(39, 92, 70, 0.12);
+    box-shadow: 0 8px 18px rgba(104, 58, 39, 0.14);
 }
 
 .btn.primary {
@@ -509,7 +510,7 @@ td {
 
 th {
     color: var(--muted);
-    background: #f6fbf8;
+    background: #fdf1e6;
     font-size: 13px;
     font-weight: 600;
 }
@@ -531,8 +532,8 @@ tr:last-child td {
     padding: 14px;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
-    color: #284236;
-    background: #f7fbf9;
+    color: #4b3429;
+    background: #fdf5ed;
     font-family: "Cascadia Mono", Consolas, monospace;
     font-size: 12px;
     line-height: 1.55;
@@ -559,7 +560,7 @@ tr:last-child td {
     padding: 13px 16px;
     border-radius: 16px;
     color: #fff;
-    background: rgba(24, 53, 42, 0.92);
+    background: rgba(61, 42, 34, 0.92);
     box-shadow: var(--shadow);
     opacity: 0;
     transform: translateY(12px);
