@@ -1,5 +1,7 @@
 # Meal Recommendation Assistant
 
+[![Build and test](https://github.com/YilinMargaretYan/meal-planner-agent-/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/YilinMargaretYan/meal-planner-agent-/actions/workflows/ci.yml)
+
 A full-stack meal recommendation application that combines multi-agent reasoning, hybrid retrieval, rule-based fallbacks, and a traceable Spring Boot backend. Users can maintain a personal meal collection or use built-in public meals, then receive recommendations based on meal time, mood, setting, health goals, cuisine, taste, and convenience.
 
 ## Highlights
@@ -10,19 +12,70 @@ A full-stack meal recommendation application that combines multi-agent reasoning
 - **Bilingual-friendly UI:** Shows English-first labels alongside the original Chinese tag values, preserving compatibility with existing records. Built-in public meals display English names.
 - **Secure cloud delivery:** Containerized with Docker and deployable to AWS ECS Fargate through GitHub Actions CI/CD using GitHub OIDC—without long-lived AWS access keys.
 
+## Interface preview
+
+| Home | Public meal collection |
+| --- | --- |
+| ![Warm-toned home page](docs/images/home.png) | ![Public meals with English labels](docs/images/public-meals.png) |
+
+| Personal meal management | Trace explorer |
+| --- | --- |
+| ![Personal meal form with bilingual tags](docs/images/my-meals.png) | ![Trace explorer with persisted request records](docs/images/trace-explorer.png) |
+
+> Screenshots use demonstration data. Do not include API keys, database endpoints, or full request-trace payloads in public documentation.
+
 ## Architecture
 
-```text
-Browser UI
-    |
-    v
-Spring Boot + MyBatis
-    |
-    +--> Orchestrator --> Intent / Clarify / Recommend / Safety agents --> OpenAI API
-    |
-    +--> Hybrid retrieval --> MySQL tags + meals + preferences + traces
-    |
-    +--> Rule-based fallbacks when model or retrieval results are unavailable
+### Runtime workflow
+
+```mermaid
+flowchart LR
+    UI["Browser UI<br/>HTML · CSS · JavaScript"] --> API["Spring Boot REST API"]
+    API --> ORCH["Diet Orchestrator<br/>stateful request workflow"]
+
+    subgraph AGENTS["Multi-agent reasoning"]
+        INTENT["Intent agent"]
+        CLARIFY["Clarify agent"]
+        RECOMMEND["Recommendation agent"]
+        VERIFY["Safety guard + response verifier"]
+    end
+
+    ORCH --> INTENT
+    ORCH --> CLARIFY
+    ORCH --> RECOMMEND
+    RECOMMEND --> VERIFY
+
+    INTENT -. LLM reasoning .-> OPENAI["AgentScope + OpenAI API"]
+    CLARIFY -. LLM reasoning .-> OPENAI
+    RECOMMEND -. LLM reasoning .-> OPENAI
+
+    ORCH --> RETRIEVAL["Hybrid meal retrieval"]
+    RETRIEVAL --> TAGS["Tag-based MySQL filtering"]
+    RETRIEVAL --> SEMANTIC["Optional semantic recall"]
+    TAGS --> DB[("MySQL")]
+    SEMANTIC --> DB
+
+    ORCH --> FALLBACK["Rule-based fallbacks<br/>missing intent · sparse results · LLM failure"]
+    ORCH --> TRACE["Trace + evaluation events"]
+    TRACE --> DB
+    API --> DB
+```
+
+### Delivery workflow
+
+```mermaid
+flowchart LR
+    DEV["Git push to main"] --> CI["GitHub Actions<br/>Maven verify"]
+    CI --> OIDC["GitHub OIDC<br/>short-lived AWS role"]
+    OIDC --> BUILD["Build Docker image<br/>tag with commit SHA"]
+    BUILD --> ECR["Amazon ECR"]
+
+    subgraph AWS["AWS runtime"]
+        ECR --> ECS["ECS Fargate service"]
+        ECS --> RDS[("RDS MySQL")]
+        ECS --> SECRETS["Secrets Manager"]
+        ECS --> LOGS["CloudWatch Logs"]
+    end
 ```
 
 ## Technology

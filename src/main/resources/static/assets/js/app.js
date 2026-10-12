@@ -112,7 +112,7 @@
     };
     function defaultRangeForm() {
         const end = new Date();
-        const start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
+        const start = new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
         return {
             startAt: toLocalInputValue(start),
             endAt: toLocalInputValue(end),
@@ -740,22 +740,20 @@
     }
     function renderTraceDetail(trace) {
         return `
-            <div class="card-title">
-                <div>
+            <div class="trace-detail">
+                <div class="trace-detail-header">
                     <h3>Trace details</h3>
                     <p>${escapeHtml(trace.traceId)}</p>
                 </div>
-            </div>
-            <div class="grid">
-                <div>
+                <div class="trace-summary">
                     <span class="badge">${escapeHtml(trace.status || "UNKNOWN")}</span>
                     <p class="muted">Session：${escapeHtml(trace.sessionId || "-")} · Events：${escapeHtml(trace.eventCount ?? "-")} · Duration：${escapeHtml(trace.durationMs ?? "-")} ms</p>
                 </div>
-                <details open>
-                    <summary>Trace JSON</summary>
-                    <pre class="json-box">${escapeHtml(safeJson(trace.traceJson))}</pre>
-                </details>
-                <form id="traceLabelForm" class="form-grid">
+                <div class="trace-json-panel">
+                    <button class="btn ghost trace-json-toggle" type="button" data-action="toggle-trace-json" aria-expanded="false" aria-controls="traceJson">Show raw Trace JSON</button>
+                    <pre id="traceJson" class="json-box hidden">${escapeHtml(safeJson(trace.traceJson))}</pre>
+                </div>
+                <form id="traceLabelForm" class="form-grid trace-label-form">
                     <input type="hidden" name="traceId" value="${escapeHtml(trace.traceId)}">
                     <div class="field">
                         <label>Expected intent</label>
@@ -1032,6 +1030,14 @@
             state.traces.filters.sessionId = "";
             navigate("/admin/traces");
             selectTrace(target.dataset.traceId);
+        } else if (action === "toggle-trace-json") {
+            const traceJson = document.querySelector("#traceJson");
+            if (traceJson) {
+                const willShow = traceJson.classList.contains("hidden");
+                traceJson.classList.toggle("hidden", !willShow);
+                target.textContent = willShow ? "Hide raw Trace JSON" : "Show raw Trace JSON";
+                target.setAttribute("aria-expanded", String(willShow));
+            }
         }
     }
     function handleSubmit(event) {
