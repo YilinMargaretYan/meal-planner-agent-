@@ -14,13 +14,17 @@ A full-stack meal recommendation application that combines multi-agent reasoning
 
 ## Interface preview
 
-| Home | Public meal collection |
+| Recommendation chat | Home |
 | --- | --- |
-| ![Warm-toned home page](docs/images/home.png) | ![Public meals with English labels](docs/images/public-meals.png) |
+| ![Multi-turn recommendation chat with meal cards](docs/images/recommendation-chat.png) | ![Warm-toned home page](docs/images/home.png) |
 
-| Personal meal management | Trace explorer |
+| Public meal collection | Personal meal management |
 | --- | --- |
-| ![Personal meal form with bilingual tags](docs/images/my-meals.png) | ![Trace explorer with persisted request records](docs/images/trace-explorer.png) |
+| ![Public meals with English labels](docs/images/public-meals.png) | ![Personal meal form with bilingual tags](docs/images/my-meals.png) |
+
+### Trace explorer
+
+![Trace explorer with persisted request records](docs/images/trace-explorer.png)
 
 > Screenshots use demonstration data. Do not include API keys, database endpoints, or full request-trace payloads in public documentation.
 
